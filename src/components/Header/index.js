@@ -1,9 +1,10 @@
 import React from "react";
+import {Container, Title} from "./styles";
 
 export default function Header() {
   return (
-    <div>
-      <h1>MyReads</h1>
-    </div>
+    <Container>
+      <Title>MyReads</Title>
+    </Container>
   );
 }
