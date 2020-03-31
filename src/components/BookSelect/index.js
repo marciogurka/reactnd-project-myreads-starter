@@ -1,25 +1,34 @@
-import React from "react";
+import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {Container, BookSelectInput} from "./styles";
 
-function BookSelect(props) {
-  function onOptionSelected(ev) {
-    props.onOptionSelected(ev.target.value);
-  }
+class BookSelect extends Component {
+  state = {
+    book: this.props.book
+  };
+  onOptionSelected = ev => {
+    this.props.onOptionSelected(ev.target.value);
+  };
 
-  return (
-    <Container>
-      <BookSelectInput onChange={onOptionSelected} value={props.book.shelf}>
-        <option value="move" disabled>
-          Move to...
-        </option>
-        <option value="currentlyReading">Currently Reading</option>
-        <option value="wantToRead">Want to Read</option>
-        <option value="read">Read</option>
-        <option value="none">None</option>
-      </BookSelectInput>
-    </Container>
-  );
+  render() {
+    const {book} = this.state;
+    return (
+      <Container>
+        <BookSelectInput
+          onChange={this.onOptionSelected}
+          value={book.shelf ? book.shelf : "none"}
+        >
+          <option value="move" disabled>
+            Move to...
+          </option>
+          <option value="currentlyReading">Currently Reading</option>
+          <option value="wantToRead">Want to Read</option>
+          <option value="read">Read</option>
+          <option value="none">None</option>
+        </BookSelectInput>
+      </Container>
+    );
+  }
 }
 
 BookSelect.propTypes = {

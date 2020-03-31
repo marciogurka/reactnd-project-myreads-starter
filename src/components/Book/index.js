@@ -13,7 +13,7 @@ class Book extends Component {
           <BookSelect book={book} onOptionSelected={onUpdateBook} />
         </BookTop>
         <BookTitle>{book.title}</BookTitle>
-        <BookAuthors>{book.authors.join(", ")}</BookAuthors>
+        <BookAuthors>{book.authors ? book.authors.join(", ") : ""}</BookAuthors>
       </Container>
     );
   }
