@@ -1,14 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
+import {Container, BookSelectInput} from "./styles";
 
 function BookSelect(props) {
   function onOptionSelected(ev) {
-    console.log(ev);
+    props.onOptionSelected(ev.target.value);
   }
 
   return (
-    <div className="book-shelf-changer">
-      <select onChange={onOptionSelected}>
+    <Container>
+      <BookSelectInput onChange={onOptionSelected} value={props.book.shelf}>
         <option value="move" disabled>
           Move to...
         </option>
@@ -16,12 +17,13 @@ function BookSelect(props) {
         <option value="wantToRead">Want to Read</option>
         <option value="read">Read</option>
         <option value="none">None</option>
-      </select>
-    </div>
+      </BookSelectInput>
+    </Container>
   );
 }
 
 BookSelect.propTypes = {
+  book: PropTypes.object.isRequired,
   onOptionSelected: PropTypes.func.isRequired
 };
 

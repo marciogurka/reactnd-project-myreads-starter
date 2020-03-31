@@ -1,19 +1,34 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 import Book from "../Book";
+import {Container, BooksGrid, BooksGridItem} from "./styles";
 
-export default class BookList extends Component {
+class BookList extends Component {
+  onUpdateBook = (book, newShelf) => {
+    this.props.onUpdateBook(book, newShelf);
+  };
+
   render() {
     const {books} = this.props;
     return (
-      <div className="bookshelf-books">
-        <ol className="books-grid">
+      <Container>
+        <BooksGrid>
           {books.map((book, index) => (
-            <li key={index}>
-              <Book book={book} />
-            </li>
+            <BooksGridItem key={index}>
+              <Book
+                book={book}
+                onUpdateBook={newShelf => this.onUpdateBook(book, newShelf)}
+              />
+            </BooksGridItem>
           ))}
-        </ol>
-      </div>
+        </BooksGrid>
+      </Container>
     );
   }
 }
+
+BookList.propTypes = {
+  onUpdateBook: PropTypes.func.isRequired
+};
+
+export default BookList;
