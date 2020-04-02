@@ -1,12 +1,14 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 import * as BooksAPI from "../../BooksAPI";
 import SearchBox from "../../components/SearchBox";
 import BookList from "../../components/BookList";
 import {Container, BookResultContainer, NoResultInfo} from "./styles";
 
-export default class Search extends Component {
+class Search extends Component {
   state = {
     books: [],
+    userBooks: this.props.books,
     searchTerm: ""
   };
 
@@ -24,7 +26,10 @@ export default class Search extends Component {
         })
         .then(books => {
           if (books.error) this.setState({books: [], searchTerm});
-          else this.setState({books, searchTerm});
+          else {
+            this.updateBookShelf(books);
+            this.setState({books, searchTerm});
+          }
         });
     } else {
       this.setState({books: [], searchTerm});
@@ -32,29 +37,32 @@ export default class Search extends Component {
   };
 
   /**
-   * @description Updates the book on the backend via API
-   * @param book [Object] The book that will be updated
-   * @param newShelf [String] The new shelf that the book will be moved
+   * @description Updates the book shelf with the user's shelf
+   * @param resultBooks [array] Array of the books result's search
    * @memberof Search
    */
-  updateBook = (book, newShelf) => {
-    BooksAPI.update(book, newShelf)
-      .catch(error => {
-        console.error(error.message);
-      })
-      .then(updatedBooksInfo => {
-        console.log(updatedBooksInfo);
-      });
+  updateBookShelf = resultBooks => {
+    resultBooks.map(resultBook => {
+      let userBooks = this.props.books;
+      const userBook = userBooks.find(
+        userBook => userBook.id === resultBook.id
+      );
+      if (userBook) {
+        resultBook.shelf = userBook.shelf;
+      }
+      return resultBook;
+    });
   };
 
   render() {
     const {books, searchTerm} = this.state;
+    const {onUpdateBook} = this.props;
     return (
       <Container>
         <SearchBox handleSearch={this.handleSearch} />
         <BookResultContainer>
           {books.length > 1 && (
-            <BookList books={books} onUpdateBook={this.updateBook} />
+            <BookList books={books} onUpdateBook={onUpdateBook} />
           )}
           {books.length === 0 && searchTerm && (
             <NoResultInfo> No books found for "{searchTerm}"</NoResultInfo>
@@ -64,3 +72,10 @@ export default class Search extends Component {
     );
   }
 }
+
+Search.propTypes = {
+  books: PropTypes.array.isRequired,
+  onUpdateBook: PropTypes.func.isRequired
+};
+
+export default Search;

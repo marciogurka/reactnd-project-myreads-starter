@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import * as BooksAPI from "../../BooksAPI";
+import PropTypes from "prop-types";
 import Header from "../../components/Header";
 import BookShelf from "../../components/BookShelf";
 import {
@@ -9,39 +9,7 @@ import {
   OpenSearchLink
 } from "./styles";
 
-export default class Home extends Component {
-  state = {
-    books: []
-  };
-
-  componentDidMount() {
-    BooksAPI.getAll().then(books => {
-      this.setState({books});
-    });
-  }
-
-  /**
-   * @description Updates the book on the backend via API
-   * @param book [Object] The book that will be updated
-   * @param newShelf [String] The new shelf that the book will be moved
-   * @memberof Home
-   */
-  updateBook = (book, newShelf) => {
-    BooksAPI.update(book, newShelf)
-      .catch(error => {
-        console.error(error.message);
-      })
-      .then(updatedBooksInfo => {
-        const oldBookIndex = this.state.books.indexOf(
-          oldBook => oldBook.title === book.title
-        );
-        let updatedBookArray = [...this.state.books];
-        book.shelf = newShelf;
-        updatedBookArray[oldBookIndex] = book;
-        this.setState({books: updatedBookArray});
-      });
-  };
-
+class Home extends Component {
   /**
    * @description Filters the array of books by some status
    * @param books [Array] - Array of books that will be filtered
@@ -50,11 +18,12 @@ export default class Home extends Component {
    * @memberof Home
    */
   filterBooksByStatus = (books, status) => {
-    return books.filter(book => book.shelf === status);
+    if (books) return books.filter(book => book.shelf === status);
+    else return [];
   };
 
   render() {
-    const {books} = this.state;
+    const {books, onUpdateBook} = this.props;
 
     return (
       <Container>
@@ -63,17 +32,17 @@ export default class Home extends Component {
           <BookShelf
             books={this.filterBooksByStatus(books, "currentlyReading")}
             shelfName="Currently Reading"
-            onUpdateBook={(book, newShelf) => this.updateBook(book, newShelf)}
+            onUpdateBook={(book, newShelf) => onUpdateBook(book, newShelf)}
           />
           <BookShelf
             books={this.filterBooksByStatus(books, "wantToRead")}
             shelfName="Want to Read"
-            onUpdateBook={(book, newShelf) => this.updateBook(book, newShelf)}
+            onUpdateBook={(book, newShelf) => onUpdateBook(book, newShelf)}
           />
           <BookShelf
             books={this.filterBooksByStatus(books, "read")}
             shelfName="Read"
-            onUpdateBook={(book, newShelf) => this.updateBook(book, newShelf)}
+            onUpdateBook={(book, newShelf) => onUpdateBook(book, newShelf)}
           />
         </ListBooksContent>
         <OpenSearch>
@@ -83,3 +52,10 @@ export default class Home extends Component {
     );
   }
 }
+
+Home.propTypes = {
+  books: PropTypes.array.isRequired,
+  onUpdateBook: PropTypes.func.isRequired
+};
+
+export default Home;
