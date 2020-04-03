@@ -9,6 +9,21 @@ import {
   OpenSearchLink
 } from "./styles";
 
+const shelves = [
+  {
+    title: "Currently Reading",
+    status: "currentlyReading"
+  },
+  {
+    title: "Want to Read",
+    status: "wantToRead"
+  },
+  {
+    title: "Read",
+    status: "read"
+  }
+];
+
 class Home extends Component {
   /**
    * @description Filters the array of books by some status
@@ -29,21 +44,15 @@ class Home extends Component {
       <Container>
         <Header />
         <ListBooksContent>
-          <BookShelf
-            books={this.filterBooksByStatus(books, "currentlyReading")}
-            shelfName="Currently Reading"
-            onUpdateBook={(book, newShelf) => onUpdateBook(book, newShelf)}
-          />
-          <BookShelf
-            books={this.filterBooksByStatus(books, "wantToRead")}
-            shelfName="Want to Read"
-            onUpdateBook={(book, newShelf) => onUpdateBook(book, newShelf)}
-          />
-          <BookShelf
-            books={this.filterBooksByStatus(books, "read")}
-            shelfName="Read"
-            onUpdateBook={(book, newShelf) => onUpdateBook(book, newShelf)}
-          />
+          {shelves.map(shelf => {
+            return (
+              <BookShelf
+                books={this.filterBooksByStatus(books, shelf.status)}
+                shelfName={shelf.title}
+                onUpdateBook={(book, newShelf) => onUpdateBook(book, newShelf)}
+              />
+            );
+          })}
         </ListBooksContent>
         <OpenSearch>
           <OpenSearchLink to="/search">Add a book</OpenSearchLink>

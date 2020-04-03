@@ -9,7 +9,7 @@ class Book extends Component {
     return (
       <Container>
         <BookTop>
-          <BookCover url={book.imageLinks.thumbnail} />
+          <BookCover url={book.imageLinks && book.imageLinks.thumbnail} />
           <BookSelect book={book} onOptionSelected={onUpdateBook} />
         </BookTop>
         <BookTitle>{book.title}</BookTitle>
